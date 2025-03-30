@@ -15,6 +15,8 @@
             background: #f4f4f4;
             color: #333;
             text-align: center;
+            display: flex;
+            flex-direction: column;
         }
         header {
             background: #007bff;
@@ -35,47 +37,156 @@
         nav a:hover {
             text-decoration: underline;
         }
-        .container {
-            padding: 40px;
+        /* Sektionen verstecken und sichtbar machen */
+        .section {
+            display: none;
+            padding: 50px;
+            min-height: 100vh;
         }
-        .box {
-            background: white;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 600px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        /* Styling für jede Sektion */
+        #home {
+            background: #276ba6;
         }
+        #about {
+            background: #232855;
+        }
+        #contact {
+            background: #26c8ec;
+        }
+
         footer {
             background: #222;
             color: white;
             padding: 15px;
-            position: absolute;
-            bottom: 0;
+        }
+
+        /* Stil für das Kontaktformular */
+        #contact form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #contact input, #contact textarea {
             width: 100%;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+
+        #contact input:focus, #contact textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #eaf3ff;
+        }
+
+        #contact button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        #contact button:hover {
+            background: #0056b3;
+        }
+
+        .success-message {
+            display: none;
+            color: green;
+            margin-top: 15px;
+        }
+
+        .error-message {
+            display: none;
+            color: red;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-
     <header>Willkommen auf meiner Webseite</header>
-    
+
     <nav>
-        <a href="#">Home</a>
-        <a href="#">Über mich</a>
-        <a href="#">Kontakt</a>
+        <a href="javascript:void(0);" onclick="showSection('home')">Home</a>
+        <a href="javascript:void(0);" onclick="showSection('about')">Über mich</a>
+        <a href="javascript:void(0);" onclick="showSection('contact')">Kontakt</a>
     </nav>
 
-    <div class="container">
-        <div class="box">
-            <h2>Hallo!</h2>
-            <p>Dies ist eine einfache und moderne Webseite mit HTML & CSS.</p>
-        </div>
+    <div id="home" class="section">
+        <h2>Home</h2>
+        <p>Willkommen auf meiner Webseite! Hier findest du verschiedene Informationen.</p>
+    </div>
+
+    <div id="about" class="section">
+        <h2>Über mich</h2>
+        <p>Ich bin ein Webentwickler, der gerne neue Dinge lernt und Webseiten erstellt.</p>
+    </div>
+
+    <div id="contact" class="section">
+        <h2>Kontakt</h2>
+        <form id="contact-form">
+            <input type="text" name="name" placeholder="Dein Name" required>
+            <input type="email" name="email" placeholder="Deine E-Mail" required>
+            <textarea name="message" rows="5" placeholder="Deine Nachricht" required></textarea>
+            <button type="submit">Senden</button>
+        </form>
+        <p class="success-message" id="success-message">Deine Nachricht wurde erfolgreich gesendet!</p>
+        <p class="error-message" id="error-message">Es gab einen Fehler beim Senden der Nachricht. Bitte versuche es später erneut.</p>
     </div>
 
     <footer>
         &copy; 2025 Meine Webseite | Erstellt mit ❤️
     </footer>
 
+    <script>
+        // Funktion, um die entsprechende Sektion anzuzeigen
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        window.onload = function() {
+            showSection('home');
+        };
+
+        document.getElementById("contact-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append("to", "preisigjanik26@gmail.com");
+            
+            fetch("https://formspree.io/f/xzzeaalk", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById("success-message").style.display = "block";
+                    document.getElementById("contact-form").reset();
+                    document.getElementById("error-message").style.display = "none";
+                } else {
+                    document.getElementById("error-message").style.display = "block";
+                    document.getElementById("success-message").style.display = "none";
+                }
+            }).catch(error => {
+                document.getElementById("error-message").style.display = "block";
+                document.getElementById("success-message").style.display = "none";
+            });
+        });
+    </script>
 </body>
 </html>
